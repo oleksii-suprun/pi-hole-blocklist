@@ -1,0 +1,18 @@
+language: generic
+os: linux
+
+script:
+    - curl -s https://easylist-downloads.adblockplus.org/advblock.txt | grep -E '^(\|\|)((?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9])(\^|\^\$popup|\^\$third-party)?$' | tr -d '|' | sed 's/\^\$popup//' | sed 's/\^\$third-party//' | tr -d '^' > blocklist-ru.txt
+
+before_deploy:
+    - git config --local user.name "aleksey-suprun"
+    - git config --local user.email "aleksey.suprun@gmail.com"
+    - git tag -f release
+
+deploy:
+  provider: releases
+  api_key:
+    secure: c9O/kPbYCj0pEmWgTfMFekL1ueEGPzJIN2+1VmaI/V+mzV/ZdtW/Do8oWBliuE/BBeXTDtHoVt+m0xCXha0UecI42BnHJmmjPZ1z+1K2VqDBu3/bRvrNuf4h1+mKZrLfQwp3wqVGOOXkRTPAtAzRYWd4aQraAtP9WmbklKUVQeUjy/iWfTJokV50yOiKD5GtwDKdRj2/9D4cSuSDo52YCjCZbfNS5lG4dJuKk8DNbcURh1drvyPaWydStvoW2bAzn/wDq44skj3FUR1HOPpqtGUauR8w2bXPgCSmhFCm/LjOegTmEPlb1mzJXm9URlMkTzcOxGazt9dVT4O/N6kWi7IjL2Eosa7m35ustXs8/mcRWjZ7lyuI5tKbFSvrUK5N+wLTMojvTfOEa4X7H27ZRtd2VWmJiKof2AQgJMs3kxxyJZzXau5YgecnuLwCT5C8ZLkva4D/gh3p4kV9zUGoJ5IG8zWcJHWcMbt/Fz/3FxEfRsgg3E7ivJzLiY1RDGw6jIvlzBVir8X9nguiVu5Zf8dHGiRKONB2vdd03kB2VCoOO4TNZhI4SzuPtq2EOVtEwjV7jARsibDjctJQISRspSj3jrzFjdtlz55Wrf1cNurJsAi16NjsPoDzUvP4WP4O/KhrZpHuPhq5ZBcaT5x6YCaOzTkDGPKYsz975gO7bMY=
+  file: blocklist-ru.txt
+  on:
+    repo: aleksey-suprun/pi-hole-blocklist
